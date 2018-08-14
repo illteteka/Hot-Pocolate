@@ -24,3 +24,7 @@ Installation, Windows only: Run the Hot Pocolate installer and go to the folder 
 Made with love, ILL TETEKA, 2018
 
 Special thanks: NotQuiteApex for testing and feature suggestions [(GO PLAY HIS GAME!!!!!)](https://notquiteapex.itch.io/cosvent), TurtleP for porting Löve to the honking Switch, Chris for convincing me to finish this, And YOU especially if you’re still reading this...
+
+### FAQ:
+ Q: How do I add my own .gifs?
+ A: Read the wiki! https://github.com/illteteka/Hot-Pocolate/wiki
