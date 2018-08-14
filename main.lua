@@ -27,12 +27,7 @@ screensaver = false
 sc_timer = 31
 sc_dir = "up"
 
-scr_w, scr_h = 1280, 720 --love.window.getDesktopDimensions(1)
-
-if screensaver then
-	love.mouse.setVisible(false)
-	love.window.setFullscreen(true)
-end
+scr_w, scr_h = 1280, 720
 
 math.randomseed(os.time())
 
@@ -44,34 +39,46 @@ function love.load()
 	font = love.graphics.newFont("interui.ttf", 22)
 	lg.setFont(font)
 
-	love.window.setMode(scr_w,scr_h)
 	if is_PC then
+		scr_w, scr_h = love.window.getDesktopDimensions(1)
+		love.mouse.setVisible(false)
+		love.window.setFullscreen(true)
+		love.window.setMode(scr_w,scr_h,{vsync = true})
 		love.window.setTitle("Hot Pocolate : TACTILE ENTERTAINABLE ADORNMENT")
+		require "pc"
 	end
 	
-	bg_location = love.filesystem.getDirectoryItems("bg")
-	fr_location = love.filesystem.getDirectoryItems("front")
-	
-	-- If we're running on PC, we only load .png files, Love can't open .gif files natively
-	local i
-	for i = #bg_location, 1, -1 do
-		if (is_PC and string.find(bg_location[i], "png") == nil) then
-			table.remove(bg_location, i)
+	if not screensaver then
+		bg_location = love.filesystem.getDirectoryItems("bg")
+		fr_location = love.filesystem.getDirectoryItems("front")
+		
+		-- If we're running on PC, we only load .png files, Love can't open .gif files natively
+		local i
+		for i = #bg_location, 1, -1 do
+			if (is_PC and string.find(bg_location[i], "png") == nil) then
+				table.remove(bg_location, i)
+			end
 		end
-	end
-	
-	for i = #fr_location, 1, -1 do
-		if (is_PC and string.find(fr_location[i], "png") == nil) then
-			table.remove(fr_location, i)
+		
+		for i = #fr_location, 1, -1 do
+			if (is_PC and string.find(fr_location[i], "png") == nil) then
+				table.remove(fr_location, i)
+			end
 		end
+		
+		bg_len = #bg_location
+		fr_len = #fr_location
+		
+		loading_step = 0  -- loading counter
+		loading_index = 1
+		load_name = ""
+	else
+		game_loaded = true
+		loading_stage = 2
+		bg    = loaddirSC("bg", is_PC)
+		front = loaddirSC("front", is_PC)
+		startHP()
 	end
-	
-	bg_len = #bg_location
-	fr_len = #fr_location
-	
-	loading_step = 0  -- loading counter
-	loading_index = 1
-	load_name = ""
 	
 	ball_img = lg.newImage("ball.png")
 	heart_img = lg.newImage("heart.png")
@@ -118,6 +125,28 @@ function loaddir(dir, file)
 	end
 
 	storage = loadgif(dir .. "/" .. file, spd)
+	
+	return storage
+
+end
+
+-- Screensaver version of loaddir
+function loaddirSC(dir, pc)
+
+	local files = love.filesystem.getDirectoryItems(dir)
+	local storage = {}
+	local count = 1
+	for i = 1, #files do
+		if (pc and string.find(files[i], "png") ~= nil) or (not pc) then
+			local spd = 1
+			if string.find(files[i], "-") ~= nil then
+				spd = string.sub(files[i], string.find(files[i], "-") + 1, string.len(files[i]))
+			end
+
+			storage[count] = loadgif(dir .. "/" .. files[i], spd)
+			count = count + 1
+		end
+	end
 	
 	return storage
 
@@ -200,6 +229,12 @@ end
 
 function love.keypressed(key)
 
+	if screensaver then
+		if (key ~= "space") then
+			love.event.quit()
+		end
+	end
+	
 	if game_loaded then
 	
 		if (key == "r") and debug_mode then
