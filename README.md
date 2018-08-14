@@ -27,4 +27,5 @@ Special thanks: NotQuiteApex for testing and feature suggestions [(GO PLAY HIS G
 
 ### FAQ:
  Q: How do I add my own .gifs?
+ 
  A: Read the wiki! https://github.com/illteteka/Hot-Pocolate/wiki
