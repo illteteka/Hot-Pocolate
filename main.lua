@@ -40,6 +40,9 @@ bg    = {}
 front = {}
 
 function love.load()
+	
+	font = love.graphics.newFont("interui.ttf", 22)
+	lg.setFont(font)
 
 	love.window.setMode(scr_w,scr_h)
 	if is_PC then
@@ -74,6 +77,7 @@ function love.load()
 	heart_img = lg.newImage("heart.png")
 	loadback_img = lg.newImage("loadback.png")
 	loadfront_img = lg.newImage("loadfront.png")
+	logo_img = lg.newImage("logo.png")
 	
 end
 
@@ -564,6 +568,7 @@ function love.update(dt)
 					game_loaded = true
 					loadback_img = nil
 					loadfront_img = nil
+					logo_img = nil
 				end
 			end
 			
@@ -925,7 +930,7 @@ function love.draw()
 
 	if not game_loaded then
 	
-		lg.print("Now loading " .. loadname .. ".gif", 90, 85)
+		lg.print("Hot Pocolate is loading " .. loadname .. ".gif", 90, 85)
 		--lg.print("loaded ".. (#bg + #front) .."/" .. (bg_len + fr_len), 100, 100+40)
 		
 		-- Draw loading bar
@@ -933,6 +938,7 @@ function love.draw()
 		xconst = scr_w-256
 		yconst = (scr_h-524)/2
 		lg.draw(loadback_img, xconst, yconst)
+		lg.draw(logo_img, 100, scr_h - 154 - 100)
 		lg.setScissor(0, 0, scr_w, (yconst + ((#bg + #front) / (bg_len + fr_len))*524))
 		lg.draw(loadfront_img, xconst, yconst)
 		lg.setScissor(0, 0, scr_w, scr_h)
